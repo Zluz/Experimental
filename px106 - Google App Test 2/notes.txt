@@ -1,0 +1,33 @@
+
+
+interactive development page:
+
+	https://console.cloud.google.com/appengine?project=px106-175204
+
+google cloud shell commands:
+
+	TUTORIALDIR=~/src/px106-175204/java_gae_quickstart-2017-07-29-00-49
+
+	git clone https://github.com/GoogleCloudPlatform/appengine-try-java.git $TUTORIALDIR
+
+	cd $TUTORIALDIR
+
+  to run (test):
+
+	jeff_rabenhorst@px106-175204:~/src/px106-175204/java_gae_quickstart-2017-07-29-00-49$ mvn appengine:run
+
+  to deploy:
+
+	gcloud config set project px106-175204
+
+	mvn appengine:deploy
+
+  url:
+	http://px106-175204.appspot.com/
+
+
+source location:
+
+	jeff_rabenhorst@px106-175204:~/src/px106-175204/java_gae_quickstart-2017-07-29-00-49/src/main/java/myapp$
+
+
