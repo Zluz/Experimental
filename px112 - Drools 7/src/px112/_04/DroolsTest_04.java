@@ -1,5 +1,7 @@
 package px112._04;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.function.Predicate;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -64,13 +66,38 @@ public class DroolsTest_04 {
 		return km;
 	}
 	
-	
-	
-	public static void main( final String[] args ) {
-		
-		
-		
 
+	final static String[] FILES = {
+//			"/src/file.txt",
+//			"/file.txt",
+//			"file.txt", // seems to work
+			
+			"/px112/HelloWorld.drl",
+			"px112/HelloWorld.drl",
+			"/HelloWorld.drl",
+			"HelloWorld.drl",
+	};
+	
+	
+	
+	public static void main( final String[] args ) throws IOException {
+
+		final String strResourcePath = "px112/HelloWorld.drl";
+		
+		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		final InputStream is = cl.getResourceAsStream( strResourcePath );
+        
+//		for ( final String strFile : FILES ) {
+//			System.out.println( "strFile = " + strFile );
+//			final InputStream is2 = cl.getResourceAsStream( strFile );
+//			if ( null!=is2 ) {
+//				System.out.println( "Stream good?  is2 = " + is2.toString() );
+//			}
+//		}
+		
+        
+        if ( null==is ) return;
+        
     	System.out.println( "starting.." );
     	
         final String drl1 = strPackage + "\n" +
@@ -101,10 +128,16 @@ public class DroolsTest_04 {
                 "   System.out.println( \"HIT: drl4\" );\n" +
                 "end\n";
 
-        final String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+        final String kmodule = 
+        		"<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
                 "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
-                "  <kbase name=\"kbase1\" default=\"true\" eventProcessingMode=\"stream\" equalsBehavior=\"identity\" scope=\"javax.enterprise.context.ApplicationScoped\">\n" +
-                "    <ksession name=\"ksession1\" type=\"stateful\" default=\"true\" clockType=\"realtime\" scope=\"javax.enterprise.context.ApplicationScoped\"/>\n" +
+                "  <kbase name=\"kbase1\" default=\"true\" "
+	                		+ "eventProcessingMode=\"stream\" "
+	                		+ "equalsBehavior=\"identity\" "
+	                		+ "scope=\"javax.enterprise.context.ApplicationScoped\">\n" +
+                "    <ksession name=\"ksession1\" type=\"stateful\" "
+                			+ "default=\"true\" clockType=\"realtime\" "
+                			+ "scope=\"javax.enterprise.context.ApplicationScoped\"/>\n" +
                 "  </kbase>\n" +
                 "</kmodule>";
 
@@ -118,9 +151,18 @@ public class DroolsTest_04 {
         final Resource r2 = ResourceFactory.newByteArrayResource( drl2.getBytes() ).setResourceType( ResourceType.GDRL ).setSourcePath( "kbase1/drl2.gdrl" );
         final Resource r3 = ResourceFactory.newByteArrayResource( drl3.getBytes() ).setResourceType( ResourceType.RDRL ).setSourcePath( "kbase1/drl3.rdrl" );
         final Resource r4 = ResourceFactory.newByteArrayResource( drl4.getBytes() ).setResourceType( ResourceType.TDRL ).setSourcePath( "kbase1/drl4.tdrl" );
+        
+        // options:
+//        ResourceFactory.newFileResource( strFilename );
+//        ResourceFactory.newFileResource( fileRules );
+//        ResourceFactory.newInputStreamResource( is );
+        final Resource r5 = ResourceFactory.newInputStreamResource( is )
+					        		.setResourceType( ResourceType.DRL )
+					        		.setSourcePath( strResourcePath );
 
 
-        final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+        final ReleaseId releaseId1 = 
+        			ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
 
     	System.out.println( "calling createAndDeployJar().." );
 
@@ -130,7 +172,8 @@ public class DroolsTest_04 {
                                            r1,
                                            r2,
                                            r3,
-                                           r4 );
+                                           r4,
+                                           r5 );
 
         
     	System.out.println( "creating a session.." );
@@ -149,9 +192,6 @@ public class DroolsTest_04 {
         System.out.println( "iFired: " + iFired );
 
         ksession.dispose();
-		
-		
-		
 		
 	}
 
