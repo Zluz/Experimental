@@ -16,14 +16,10 @@
 
 package px112._03;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.KieRepository;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.api.runtime.KieContainer;
@@ -53,15 +49,15 @@ public class HelloWorldExample {
 
     public static void execute( KieContainer kc ) {
 
-    	final KieServices services = KieServices.get();
-		final KieRepository repo = services.getRepository();
+//    	final KieServices services = KieServices.get();
+//		final KieRepository repo = services.getRepository();
 
     	KieFileSystemImpl kfs = new KieFileSystemImpl();
     	kfs.read( DRL_FILE );
 
-    	final KieBuilder builder = services.newKieBuilder( kfs ).buildAll();
+//    	final KieBuilder builder = services.newKieBuilder( kfs ).buildAll();
     	
-    	final KieModule module = builder.getKieModule();
+//    	final KieModule module = builder.getKieModule();
     	
     	// From the container, a session is created based on
         // its definition and configuration in the META-INF/kmodule.xml file

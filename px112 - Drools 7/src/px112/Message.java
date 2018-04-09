@@ -1,4 +1,4 @@
-package px112._03;
+package px112;
 
 
 
@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings( { "serial", "rawtypes", "unchecked" } )
 public class Message implements Serializable {
 
     private String          message1 = "One";
@@ -21,7 +22,7 @@ public class Message implements Serializable {
 
     private int             status;
 
-    private List    list     = new ArrayList();
+	private List    list     = new ArrayList();
     private int     number   = 0;
     private Date    birthday = new Date();
     private boolean fired    = false;
@@ -113,7 +114,7 @@ public class Message implements Serializable {
         this.list = list;
     }
 
-    public void addToList(final String s) {
+	public void addToList(final String s) {
         this.list.add( s );
     }
 

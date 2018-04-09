@@ -14,6 +14,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -38,7 +39,6 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
@@ -305,7 +305,7 @@ public class CommonTestMethodBase {
                 kfs.write("src/main/resources/r" + i + ".drl", drls[i]);
             }
         }
-        KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
+//        KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
 //        assertFalse(kb.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).toString(),
 //                kb.getResults().hasMessages(org.kie.api.builder.Message.Level.ERROR));
         InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
@@ -468,7 +468,7 @@ public class CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for (String source : sources)
             kbuilder.add( ResourceFactory.newClassPathResource(source, getClass()), ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+//        KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( kbuilder.getErrors().size() > 0 ) {
             for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
                 System.err.println( error );

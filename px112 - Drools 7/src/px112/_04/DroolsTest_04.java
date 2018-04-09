@@ -1,28 +1,76 @@
-package px112._03;
+package px112._04;
 
+import java.util.function.Predicate;
+
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.io.ResourceFactory;
 
 import px112.Message;
 
-/*
- * This is largely copied from:
- * https://github.com/kiegroup/drools/blob/master/drools-compiler/src/test/java/org/drools/compiler/integrationtests/KieBuilderTest.java
- */
-public class DroolsTest {
+public class DroolsTest_04 {
 
-//	final static String strPackage = "package org.drools.compiler";
+
 	final static String strPackage = "package px112";
 	
 
-    public static void testResourceInclusion() {
-    	
+
+	public static byte[] createJar(	final KieServices ks, 
+									final String kmoduleContent,
+									final Predicate<String> classFilter, 
+									final ReleaseId releaseId,
+									final Resource... resources ) {
+		
+		final KieFileSystem kfs = ks.newKieFileSystem()
+				.generateAndWritePomXML(releaseId)
+				.writeKModuleXML(kmoduleContent);
+		
+		for ( int i = 0; i < resources.length; i++ ) {
+			if (resources[i] != null) {
+				kfs.write(resources[i]);
+			}
+		}
+		final KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+		((InternalKieBuilder) kieBuilder).buildAll(classFilter);
+		
+		final InternalKieModule kieModule = 
+				(InternalKieModule) ks.getRepository().getKieModule(releaseId);
+		
+		final byte[] jar = kieModule.getBytes();
+		return jar;
+	}
+
+
+	public static KieModule createAndDeployJar(	
+								final KieServices ks,
+								final String kmoduleContent, 
+								final ReleaseId releaseId, 
+								final Resource... resources ) {
+		
+		final byte[] jar = createJar( 
+				ks, kmoduleContent, o -> true, releaseId, resources );
+
+		Resource jarRes = ks.getResources().newByteArrayResource(jar);
+		KieModule km = ks.getRepository().addKieModule(jarRes);
+		return km;
+	}
+	
+	
+	
+	public static void main( final String[] args ) {
+		
+		
+		
+
     	System.out.println( "starting.." );
     	
         final String drl1 = strPackage + "\n" +
@@ -65,15 +113,18 @@ public class DroolsTest {
     	System.out.println( "creating resources.." );
 
         // Create an in-memory jar for version 1.0.0
-        final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+    	
         final Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
         final Resource r2 = ResourceFactory.newByteArrayResource( drl2.getBytes() ).setResourceType( ResourceType.GDRL ).setSourcePath( "kbase1/drl2.gdrl" );
         final Resource r3 = ResourceFactory.newByteArrayResource( drl3.getBytes() ).setResourceType( ResourceType.RDRL ).setSourcePath( "kbase1/drl3.rdrl" );
         final Resource r4 = ResourceFactory.newByteArrayResource( drl4.getBytes() ).setResourceType( ResourceType.TDRL ).setSourcePath( "kbase1/drl4.tdrl" );
 
+
+        final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+
     	System.out.println( "calling createAndDeployJar().." );
-        
-        final KieModule km = CommonTestMethodBase.createAndDeployJar( ks,
+
+        final KieModule km = createAndDeployJar( ks,
                                            kmodule,
                                            releaseId1,
                                            r1,
@@ -81,11 +132,6 @@ public class DroolsTest {
                                            r3,
                                            r4 );
 
-//        final InternalKieModule ikm = (InternalKieModule) km;
-//        assertNotNull( ikm.getResource( r1.getSourcePath() ) );
-//        assertNotNull( ikm.getResource( r2.getSourcePath() ) );
-//        assertNotNull( ikm.getResource( r3.getSourcePath() ) );
-//        assertNotNull( ikm.getResource( r4.getSourcePath() ) );
         
     	System.out.println( "creating a session.." );
 
@@ -102,14 +148,12 @@ public class DroolsTest {
         
         System.out.println( "iFired: " + iFired );
 
-//        assertEquals( 2, ksession.fireAllRules() );
         ksession.dispose();
-    }
-
-	
-    public static void main( final String[] args ) {
-    	testResourceInclusion();
+		
+		
+		
+		
 	}
-    
-	
+
+
 }
