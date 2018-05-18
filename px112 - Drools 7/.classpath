@@ -16,6 +16,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Drools 7.6.0.Final"/>
+	<classpathentry kind="con" path="DROOLS/Drools"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Drools 7.7.0.Final"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
